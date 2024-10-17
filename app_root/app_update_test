@@ -1,0 +1,106 @@
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
+import yaml
+import os
+import zipfile
+
+app = Flask(__name__)
+app.secret_key = 'some_secret_key'
+
+# Role definitions with labels, commands, and tags
+roles = [
+    {"label": "webserver", "role_command": "my-cool-role", "ansible_tag": "web"},
+    {"label": "database", "role_command": "my-database-role", "ansible_tag": "db"},
+    {"label": "load_balancer", "role_command": "my-load-balancer-role", "ansible_tag": "lb"}
+]
+
+# Supported Operating Systems
+os_list = [
+    "Red Hat 8",
+    "Red Hat 9",
+    "Amazon Linux",
+    "Rocky"
+]
+
+# Function to create playbook content based on roles and OS
+def create_playbook(selected_roles, selected_os):
+    playbook = [{
+        'hosts': 'all',
+        'become': True,
+        'roles': selected_roles,
+        'vars': {
+            'target_os': selected_os  # Add OS-specific information here
+        }
+    }]
+    return yaml.dump(playbook, default_flow_style=False)
+
+# Function to generate the ansible-playbook command with tags
+def generate_ansible_command(playbook_file, selected_tags):
+    tags_str = ",".join(selected_tags)
+    command = f"ansible-playbook {playbook_file} --tags \"{tags_str}\""
+    return command
+
+# Function to package files (playbook and roles) into a ZIP file
+def package_files(playbook_file, selected_roles):
+    zip_filename = 'ansible_package.zip'
+    with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        # Add playbook
+        zipf.write(playbook_file, os.path.basename(playbook_file))
+        
+        # Add selected roles
+        for role in selected_roles:
+            role_dir = f'roles/{role}'
+            if os.path.exists(role_dir):
+                for foldername, subfolders, filenames in os.walk(role_dir):
+                    for filename in filenames:
+                        file_path = os.path.join(foldername, filename)
+                        zipf.write(file_path, os.path.relpath(file_path, 'roles'))
+    
+    return zip_filename
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        selected_roles = request.form.getlist('roles')
+        selected_os = request.form.get('selected_os')
+
+        if not selected_roles:
+            flash("Please select at least one role.")
+            return redirect(url_for('index'))
+
+        # Map selected roles to role commands and tags
+        selected_role_commands = [role['role_command'] for role in roles if role['role_command'] in selected_roles]
+        selected_tags = [role['ansible_tag'] for role in roles if role['role_command'] in selected_roles]
+
+        # Generate playbook with selected roles and OS
+        playbook_content = create_playbook(selected_role_commands, selected_os)
+        playbook_file = 'site.yml'
+
+        # Save playbook file
+        with open(playbook_file, 'w') as f:
+            f.write(playbook_content)
+
+        # Generate ansible command with tags
+        ansible_command = generate_ansible_command(playbook_file, selected_tags)
+
+        # Package files into a ZIP
+        zip_file = package_files(playbook_file, selected_role_commands)
+
+        # Flash command and success message
+        flash(f"Playbook created for {selected_os}. To run the playbook, use the following command:")
+        flash(ansible_command)
+
+        # Redirect to download the package
+        return redirect(url_for('download_package', filename=zip_file))
+
+    return render_template('index.html', roles=roles, os_list=os_list)
+
+@app.route('/download/<filename>')
+def download_package(filename):
+    file_path = os.path.join(os.getcwd(), filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    flash("File not found.")
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
