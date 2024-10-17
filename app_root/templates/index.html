@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Playbook Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create Your Ansible Playbook</h1>
+        </header>
+
+        <form method="POST" action="/">
+            <div class="roles-selection">
+                <h2>Select Roles</h2>
+                {% for role in roles %}
+                <div class="role-checkbox">
+                    <input type="checkbox" name="roles" value="{{ role }}" id="{{ role }}">
+                    <label for="{{ role }}">{{ role | capitalize }}</label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="playbook-options">
+                <h2>Playbook Options</h2>
+                <label for="playbook_file">Playbook Name:</label>
+                <input type="text" name="playbook_file" id="playbook_file" placeholder="site.yml">
+                <br>
+                <label for="inventory_input">Inventory:</label>
+                <textarea name="inventory_input" id="inventory_input" rows="5" placeholder="[group1]
+host1
+host2"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Playbook</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <footer>
+            <p>Playbook Generator © 2024</p>
+        </footer>
+    </div>
+    <script>
+        document.querySelector('.submit-btn').addEventListener('click', function() {
+            const penguin = document.body.querySelector("body::after");
+            penguin.style.animation = 'bounce 0.5s ease-in-out';
+        });
+    </script>
+</body>
+</html>

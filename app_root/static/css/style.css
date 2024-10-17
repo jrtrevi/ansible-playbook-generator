@@ -1,0 +1,183 @@
+/* Modern CSS for Playbook Generator with Cool Background and Animations */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1f1c2c 10%, #928dab 100%);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(31, 28, 44, 0.85) 10%, rgba(146, 141, 171, 0.85) 100%);
+    z-index: -1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px); /* For glassmorphism effect */
+}
+
+header h1 {
+    font-size: 3rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Penguin Image Animation on Page Load */
+body::after {
+    content: "";
+    position: fixed;
+    top: 20px;
+    left: -150px; /* Start off-screen */
+    width: 150px; /* Resize the image */
+    height: 150px;
+    background-image: url("/static/images/penguin-king.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10; /* Keeps it in front of background */
+    
+    /* Add animation */
+    animation: slideIn 1.5s ease-out forwards;
+}
+
+/* Keyframes for Penguin Slide In on Page Load */
+@keyframes slideIn {
+    0% {
+        left: -150px;
+        opacity: 0;
+    }
+    100% {
+        left: 20px;
+        opacity: 1;
+    }
+}
+
+/* Form styling */
+form {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+h2 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.roles-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.role-checkbox {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #fff;
+}
+
+.role-checkbox input {
+    margin-right: 10px;
+}
+
+.playbook-options {
+    margin-top: 30px;
+}
+
+.playbook-options input,
+.playbook-options textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+button.submit-btn {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+button.submit-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Animation when the submit button is clicked */
+button.submit-btn:active {
+    animation: bounce 0.4s ease-in-out;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.flash-messages {
+    margin-top: 20px;
+}
+
+.alert {
+    background-color: #e74c3c;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 10px 0;
+    color: #95a5a6;
+}
