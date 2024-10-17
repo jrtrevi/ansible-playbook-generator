@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Playbook Creator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <img id="penguin-img" src="{{ url_for('static', filename='images/penguin.png') }}" alt="Penguin">
+    
+    <div class="container">
+        <h3>Select Roles:</h3>
+        <form method="POST" action="/">
+            <div>
+                {% for role in roles %}
+                    <input type="checkbox" name="roles" value="{{ role.role_command }}">
+                    <label>{{ role.label }}</label><br>
+                {% endfor %}
+            </div>
+
+            <h3>Select OS:</h3>
+            <select name="selected_os">
+                {% for os in os_list %}
+                    <option value="{{ os }}">{{ os }}</option>
+                {% endfor %}
+            </select>
+
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
