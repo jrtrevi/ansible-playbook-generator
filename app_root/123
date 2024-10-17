@@ -1,5 +1,0 @@
-- become: true
-  hosts: all
-  roles:
-  - webserver
-  - database
