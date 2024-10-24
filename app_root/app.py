@@ -140,12 +140,15 @@ def index():
             @after_this_request
             def remove_file(response):
                 try:
-                    os.remove(zip_filename)
+                    if os.path.exists(zip_filename):
+                        os.remove(zip_filename)
+                        print(f"Removed ZIP file: {zip_filename}")
                 except Exception as e:
                     print(f"Error deleting file: {e}")
                 return response
 
             return send_file(zip_filename, as_attachment=True)
+        
 
         except Exception as e:
             print(f"Error creating config or zip: {e}")
