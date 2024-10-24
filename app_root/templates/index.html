@@ -13,16 +13,29 @@
         </header>
 
         <form method="POST" action="/">
+            <!-- OS Selection -->
+            <div class="os-selection">
+                <h2>Select Operating System</h2>
+                <select name="selected_os" id="osSelection" required>
+                    <option value="" disabled selected>Select an OS</option>
+                    {% for os in os_list %}
+                        <option value="{{ os.distro }}">{{ os.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Roles Selection -->
             <div class="roles-selection">
                 <h2>Select Roles</h2>
                 {% for role in roles %}
                 <div class="role-checkbox">
-                    <input type="checkbox" name="roles" value="{{ role }}" id="{{ role }}">
-                    <label for="{{ role }}">{{ role | capitalize }}</label>
+                    <input type="checkbox" name="roles" value="{{ role.role_command }}" id="{{ role.role_command }}">
+                    <label for="{{ role.role_command }}">{{ role.label }}</label>
                 </div>
                 {% endfor %}
             </div>
 
+            <!-- Playbook Options -->
             <div class="playbook-options">
                 <h2>Playbook Options</h2>
                 <label for="playbook_file">Playbook Name:</label>
@@ -34,9 +47,11 @@ host1
 host2"></textarea>
             </div>
 
+            <!-- Submit Button -->
             <button type="submit" class="submit-btn">Generate Playbook</button>
         </form>
 
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <div class="flash-messages">
@@ -51,10 +66,14 @@ host2"></textarea>
             <p>Playbook Generator © 2024</p>
         </footer>
     </div>
+
+    <!-- JavaScript for Penguin Animation -->
     <script>
         document.querySelector('.submit-btn').addEventListener('click', function() {
-            const penguin = document.body.querySelector("body::after");
-            penguin.style.animation = 'bounce 0.5s ease-in-out';
+            const penguin = document.body.querySelector(".penguin-img");
+            if (penguin) {
+                penguin.style.animation = 'bounce 0.5s ease-in-out';
+            }
         });
     </script>
 </body>
